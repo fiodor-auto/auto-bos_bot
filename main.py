@@ -12,15 +12,25 @@ import aiohttp
 import feedparser
 from datetime import datetime
 import logging
+import os
+from dotenv import load_dotenv
+
+# ====================== ЗАГРУЗКА ПЕРЕМЕННЫХ ОКРУЖЕНИЯ ======================
+load_dotenv()
 
 # ====================== ЛОГИРОВАНИЕ ======================
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ====================== НАСТРОЙКИ ======================
-TOKEN = "8924545497:AAF115GXev0DiOtPPbmVHMDdt272RKrcsFU"
-CHAT_ID = -100755229383
-DATABASE_FILE = 'car_problems.db'
+TOKEN = os.getenv("TOKEN")
+CHAT_ID = int(os.getenv("CHAT_ID", "-100755229383"))
+DATABASE_FILE = os.getenv("DATABASE_FILE", "car_problems.db")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+if not TOKEN:
+    logger.error("❌ ОШИБКА: TOKEN не найден в .env файле!")
+    exit(1)
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -232,7 +242,7 @@ async def vin_decode(message: types.Message):
             if problems:
                 text += "\n🔧 <b>Частые проблемы этой модели:</b>\n\n"
                 for idx, (p, s) in enumerate(problems, 1):
-                    text += f"<b>{idx}. ❓ {p}</b>\n"
+                    text += f"<b>{idx}. �� {p}</b>\n"
                     text += f"   ✅ {s[:150]}...\n\n"
             else:
                 text += "\n🔍 Пока нет записей проблем по этой модели в нашей базе."
